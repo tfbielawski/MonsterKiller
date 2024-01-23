@@ -11,17 +11,27 @@ const LOG_EVENT_MONSTER_ATTACK = "MONSTER_ATTACK";
 const LOG_EVENT_PLAYER_HEAL = "PLAYER_HEAL";
 const LOG_EVENT_GAME_OVER = "GAME_OVER";
 
-const enteredValue = prompt("Enter Max life for you and monster", "100");
-
-let chosenMaxLife = parseInt(enteredValue);
 let battleLog = [];
+let lastLoggedEntry;
 
-if (isNaN(chosenMaxLife) || chosenMaxLife <= 0) {
-  alert("You entered an invalid number. Starting values have been set to 100");
+function getMaxLifeValues(){
+  const enteredValue = prompt("Enter Max life for you and monster", "100");
+  
+  const parsedValue = parseInt(enteredValue);
+  if (isNaN(parsedValue) || parsedValue <= 0) {
+    throw {message: "Invalid input. Please enter a number!"}
+  } 
+  return parsedValue;
+}
+
+let chosenMaxLife;
+try {
+  chosenMaxLife = getMaxLifeValues();
+}
+catch(error){
+  console.log(error);
   chosenMaxLife = 100;
-} 
-else {
-  alert(`You chose ${enteredValue} as your starting values`);
+  alert("You entered something wrong.")
 }
 
 let currentMonsterHealth = chosenMaxLife;
@@ -198,21 +208,24 @@ function printLogHandler(){
     console.log("j" + " whieeeellle");
     j++;
   }
-  //for of: used in arrays
-  // for (const i of battleLog){
-  //   console.log("Shhhh")
-  // }
+  // for of: used in arrays
+  for (const i of battleLog){
+    console.log("Shhhh")
+  }
   let i = 0;
   // for in: used in objects
-  for (const i of battleLog){
-    console.log(`#${i}`);
-    for (const key in i){
-      console.log(key);
-      //use [] to access the value on the obj's key
-      console.log(i[key]);
+  for (const z of battleLog){
+    if (!lastLoggedEntry && lastLoggedEntry !== 0 || lastLoggedEntry < i){
+      console.log(`#${i}`);
     }
-    i++;
+    for (const key in z){
+      console.log(`${key} => ${z[key]}`); //Section 103
+      //use [] to access the value on the obj's key
+    }
+    lastLoggedEntry = 1;
+    break;
   }
+  i++;
 }
 
 attackBtn.addEventListener("click", attackHandler);
